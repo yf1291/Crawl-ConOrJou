@@ -16,4 +16,4 @@ for index,info in enumerate(info_dict):
     worksheet.write(index+1,1,label=info['authors'])
     worksheet.write(index+1,2,label=info['title'])
 
-workbook.save('info.xls')
+workbook.save('dblp_info.xls')
