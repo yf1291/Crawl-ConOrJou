@@ -1,5 +1,6 @@
 # 爬虫小工具
 ## DBLP 爬虫说明
+一个用于爬取dblp的信息的爬虫，主要利用python的scrapy来实现。
 ### 安装依赖
 ```
     pip install scrapy
@@ -31,6 +32,7 @@
 | title | 论文名字 |
 
 ## SCI 爬虫说明
+一个用于爬取web of science的信息的爬虫，主要使用js的puppeteer实现。
 ### 安装依赖
 ```
     npm i puppeteer
