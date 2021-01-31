@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 
-const year = 10;
-const ConOrJou_list = ['"Cell Biology International"','"Cell Biology Research Progress"','"Cell Biology International Reports"'];  // select.options[3] 是出版物名称
+const year = 20;
+const ConOrJou_list = ['"ieee transactions on software engineering"','"ACM Transactions on Software Engineering and Methodology"'];  // select.options[3] 是出版物名称
 
 (async () => {
   const browser = await puppeteer.launch({headless: false});
@@ -26,9 +26,11 @@ const ConOrJou_list = ['"Cell Biology International"','"Cell Biology Research Pr
         ]);
         var total = 0;
         // await page.waitForSelector('[id="hitCount.top"]');
+        await page.waitForTimeout(1000);
         await page.evaluate( () => {total_num = parseInt(document.querySelector('[id="hitCount.top"]').textContent.replace(',',''));return total_num;} ).then( (total_num) => {
           total = total_num;
         } ); 
+        console.log(total)
         for (var start=0;start<total;start+=499){
           start++;
           if (start+499 < total){
@@ -40,18 +42,19 @@ const ConOrJou_list = ['"Cell Biology International"','"Cell Biology Research Pr
             to = total;
           }
           // export file
-          const searchExportButton = await page.$('#exportTypeName');
-          if (searchExportButton){
+          // const searchExportButton = await page.$('#exportTypeName');
+          await page.waitForTimeout(1000);
+          try {
             console.log(1);
             await page.click('#exportTypeName');
             await page.click('#saveToMenu > li:nth-child(3) > a');
           }
-          else{
-            console.log(2);
+          catch(error){
+            console.log(error);
             await page.click('#page > div.EPAMdiv.main-container > div.NEWsummaryPage > div.NEWsummaryDataContainer > div > div > div > div.l-column-content > div.l-content > div:nth-child(6) > div.export_options > div.selectedExportOption > ul > li > button').then(() => console.log('success')).catch(() => console.log('fail'));
           }
           // await page.waitForSelector('#numberOfRecordsRange');
-          // await page.waitForTimeout(2000);
+          await page.waitForTimeout(1000);
           // deal the number
           await page.click('#numberOfRecordsRange');
           await page.evaluate( (from) => {document.querySelector('#markFrom').value = from;}, from);
