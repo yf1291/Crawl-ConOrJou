@@ -8,10 +8,10 @@ def get_year(data):
     pattern = re.compile(r'20\d\d')
     time_tmp = pattern.findall(data)
     if len(time_tmp) > 0:
-        year = time_tmp[0]
+        year = time_tmp[-1]
     else:
         year = None
-    return year 
+    return year
 
 def write_list_info():
     workbook = openpyxl.Workbook()

@@ -24,29 +24,57 @@ class DblpSpider(scrapy.Spider):
 
     def parse(self, response):
         # year = 3  # 最近多少年
-        con_name = response.xpath('//*[@id="headline"]/h1/text()').get()
-        for con in response.xpath("//ul[@class='publ-list']")[:year]:
-            for pub in con.xpath("li[@class='entry editor toc']"):
-                a_list = pub.xpath("nav/ul/li/div/a")
-                href = a_list[0].css('a::attr(href)').get()
-                con_title = pub.xpath("cite/span[@class='title']/text()").extract()[0]
-                request = scrapy.Request(href,callback=self.parse_page2,cb_kwargs=dict(con_title=con_title,con_name=con_name),headers=headers)
+        if 'journals' in response.url:
+            print('journals')
+            jou_name = response.xpath('//*[@id="headline"]/h1/text()').get()
+            for jou in response.xpath('//*[@id="main"]/ul/li')[:year]:
+                href = jou.css('a::attr(href)').get()
+                # print(href)
+                jou_title = jou.re_first(r'">(.+?)<')
+                request = scrapy.Request(href, callback=self.parse_page_jou, cb_kwargs=dict(jou_title=jou_title,jou_name=jou_name),headers=headers)
                 yield request
+        else:
+            con_name = response.xpath('//*[@id="headline"]/h1/text()').get()
+            for con in response.xpath("//ul[@class='publ-list']")[:year]:
+                for pub in con.xpath("li[@class='entry editor toc']"):
+                    a_list = pub.xpath("nav/ul/li/div/a")
+                    href = a_list[0].css('a::attr(href)').get()
+                    con_title = pub.xpath("cite/span[@class='title']/text()").extract()[0]
+                    request = scrapy.Request(href,callback=self.parse_page_con,cb_kwargs=dict(con_title=con_title,con_name=con_name),headers=headers)
+                    yield request
 
-    def parse_page2(self, response, con_title, con_name):
+    def parse_page_jou(self,response, jou_title, jou_name):
+        # print(response.url)
+        items = []
+        for each in response.xpath('//*[@class="entry article"]'):
+            item = DblpItem()
+            authors = each.xpath('cite/span[@itemprop="author"]/a/span/text()').extract()
+            title = each.xpath('cite/span[@itemprop="name"]/text()').get()
+            #xpath返回的是包含一个元素的列表
+            item['authors'] = authors
+            item['ConOrJouName'] = jou_name
+            item['title'] = title
+            item['ConOrJou'] = jou_title
+            item['category'] = 'Jou'
+            items.append(item)
+
+        return items
+
+    def parse_page_con(self, response, con_title, con_name):
         items = []
         for each in response.xpath("//li[@class='entry inproceedings']"):
 
             item = DblpItem()
             #extract()方法返回的都是unicode字符串
             authors = each.xpath('cite/span[@itemprop="author"]/a/span/text()').extract()
-            title = each.xpath('cite/span[@itemprop="name"]/text()').extract()
+            title = each.xpath('cite/span[@itemprop="name"]/text()').get()
 
             #xpath返回的是包含一个元素的列表
             item['authors'] = authors
             item['ConOrJouName'] = con_name
-            item['title'] = title[0]
+            item['title'] = title
             item['ConOrJou'] = con_title
+            item['category'] = 'Conf'
 
             items.append(item)
 

@@ -12,4 +12,5 @@ class DblpItem(scrapy.Item):
     ConOrJouName = scrapy.Field()
     authors = scrapy.Field()
     title = scrapy.Field()
+    category = scrapy.Field()
     # info = scrapy.Field()
