@@ -1,6 +1,6 @@
 import scrapy
 from Dblp.items import DblpItem
-
+from input_dblp import start_urls,year 
 
 headers = {
     'Connection': 'keep-alive',
@@ -19,21 +19,21 @@ headers = {
 class DblpSpider(scrapy.Spider):
     name = 'dblp'
     allowed_domains = ['dblp.org']  # 限制爬虫的区域
-    start_urls = ["https://dblp.org/db/conf/sigsoft/index.html"]  # 要爬的dblp会议/期刊的主页
+    start_urls = start_urls # ["https://dblp.org/db/conf/sigsoft/index.html"]  # 要爬的dblp会议/期刊的主页
 
 
     def parse(self, response):
-        year = 3  # 最近多少年
-        
+        # year = 3  # 最近多少年
+        con_name = response.xpath('//*[@id="headline"]/h1/text()').get()
         for con in response.xpath("//ul[@class='publ-list']")[:year]:
             for pub in con.xpath("li[@class='entry editor toc']"):
                 a_list = pub.xpath("nav/ul/li/div/a")
                 href = a_list[0].css('a::attr(href)').get()
                 con_title = pub.xpath("cite/span[@class='title']/text()").extract()[0]
-                request = scrapy.Request(href,callback=self.parse_page2,cb_kwargs=dict(con_title=con_title),headers=headers)
+                request = scrapy.Request(href,callback=self.parse_page2,cb_kwargs=dict(con_title=con_title,con_name=con_name),headers=headers)
                 yield request
 
-    def parse_page2(self, response, con_title):
+    def parse_page2(self, response, con_title, con_name):
         items = []
         for each in response.xpath("//li[@class='entry inproceedings']"):
 
@@ -44,6 +44,7 @@ class DblpSpider(scrapy.Spider):
 
             #xpath返回的是包含一个元素的列表
             item['authors'] = authors
+            item['ConOrJouName'] = con_name
             item['title'] = title[0]
             item['ConOrJou'] = con_title
 

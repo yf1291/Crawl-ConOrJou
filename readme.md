@@ -8,7 +8,7 @@
 由于scrapy需要用到Twisted，而安装Twisted需要安装Microsoft C++ Build Tools，所以如果没安装C++ Build Tools会出现安装错误。
 
 ### 使用说明
-在Dblp/spiders/dblp.py文件中，修改start_urls和year
+在dblp_crawl/input.py文件中，修改start_urls和year
 ```
     start_urls = []  # 需要搜索的期刊/会议的dblp主页
     year = n  # 最近的n届期刊/会议
@@ -18,9 +18,9 @@
     # -o 后面的是文件名，可以支持的格式有info.json, iofo.json1, info.csv, info.xml，启动命令在下方
     scrapy crawl dblp -o info.csv
 
-    # 如果还出现乱码就使用以下方法
-    scrapy crawl dblp -o info.json
-    python json_to_xls.py
+    # 如果还出现乱码就使用以下方法（建议使用该方法），
+    scrapy crawl dblp -o info.json # 会输出info.json文件，为源数据
+    python json_to_xlsx.py # 会输出两个文件，dblp_list_info是清洗后的源数据，dblp_sort_info是统计后的数据
 ```
 
 ### 输出文件说明
@@ -35,15 +35,19 @@
 一个用于爬取web of science的信息的爬虫，主要使用js的puppeteer实现。
 ### 安装依赖
 ```
-    npm i puppeteer
+    npm install puppeteer
 ```
 注意，需要提前安装好node.js
 
 ### 使用说明
-在crawl_sci.js文件中，修改ConOrJou_list和year
+在sci_crawl/input.txt中输入所需爬的 会议/期刊 年限，可以运行transfer.py转换成ConOrJou_dict
 ```
-    ConOrJou_list = []  # 需要搜索的期刊/会议名称
-    year = n  # 最近的n年的paper
+Cell 5
+Science 5
+```
+在crawl_sci.js文件中，修改ConOrJou_dict
+```
+    ConOrJou_dict = {'"Cell"':5,'"Science"':5}
 ```
 设定好参数之后即可进行爬虫
 ```
@@ -51,7 +55,7 @@
     node .\crawl_sci.js
 
     # 将下载的文件复制到sci_download文件夹中，运行python脚本清洗数据
-    python .\sci_html_to_xls.py
+    python .\sci_html_to_xlsx.py
 ```
 
 ### 输出文件说明
