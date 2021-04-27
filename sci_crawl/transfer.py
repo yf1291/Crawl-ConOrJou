@@ -6,7 +6,7 @@ def transfer():
         while(line != ''):
             # print(line.split(' '))
             slice_list = line.split(' ')
-            name = ' '.join(slice_list[:]).strip().lower()
+            name = ' '.join(slice_list[:-1]).strip().lower()
             year = int(slice_list[-1])
             # year = 6
             output_dict[f'"{name}"'] = year
@@ -17,7 +17,7 @@ def transfer():
             # name_list.append(f'"{name}"')
             # year_lsit.append(year)
             line = f.readline()
-    print(total_dict)
+    # print(total_dict)
     for n in total_dict:
         if total_dict[n] > 1:
             print(n,total_dict[n])

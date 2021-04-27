@@ -1,7 +1,7 @@
 const { time } = require('console');
 const puppeteer = require('puppeteer');
 
-input_object =  {'"ANGEWANDTE CHEMIE-INTERNATIONAL EDITION"': 6, '"ACS CATALYSIS"': 6, '"CHEMICAL SCIENCE"': 6,'"NATURE COMMUNICATIONS"': 6, '"SCIENCE BULLETIN"': 6, '"Proceedings of the National Academy of the Sciences of the United States of America"': 6}
+input_object =  {'"ieee transactions on computer-aided design of integrated circuits and systems"': 20}
 
 // const year = 20;
 const ConOrJou_list = Object.keys(input_object);  // select.options[3] 是出版物名称
