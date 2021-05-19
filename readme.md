@@ -40,6 +40,7 @@
 注意，需要提前安装好node.js
 
 ### 使用说明
+#### 按期刊名字搜索
 在sci_crawl/input.txt中输入所需爬的 会议/期刊 年限，可以运行transfer.py转换成ConOrJou_dict
 ```
 Cell 5
@@ -54,8 +55,28 @@ Science 5
     # 爬取web of science网页信息，会下载到电脑的浏览器默认下载地址
     node .\crawl_sci.js
 
-    # 将下载的文件复制到sci_download文件夹中，运行python脚本清洗数据
+    # 将下载的文件复制到sci_download文件夹中，运行python脚本清洗数据，将会输出sci_sort_info.xlsx文件
     python .\sci_html_to_xlsx.py
+```
+
+#### 按人名搜索
+在sci_crawl/input.txt中输入所需爬的 人名 年限，可以运行transfer.py转换成ConOrJou_dict
+```
+Lo, David 5
+Xia, Xin 5
+Yi Li 5
+```
+在crawl_sci.js文件中，修改ConOrJou_dict
+```
+    ConOrJou_dict = {'"lo, david"': '5', '"xia, xin"': '5', '"yi li"': '5'}
+```
+设定好参数之后即可进行爬虫
+```
+    # 爬取web of science网页信息，会下载到电脑的浏览器默认下载地址
+    node .\crawl_sci_author.js
+
+    # 将下载的文件复制到sci_download文件夹中，运行python脚本清洗数据，将会输出sci_sort_info_author.xlsx文件
+    python .\sci_html_to_xlsx_author.py
 ```
 
 ### 输出文件说明
