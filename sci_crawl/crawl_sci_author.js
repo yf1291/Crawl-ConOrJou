@@ -1,7 +1,7 @@
 const { time } = require('console');
 const puppeteer = require('puppeteer');
 
-input_object =  {'"diabetologia"': '5', '"blood"': '5', '"hepatology"': '5', '"progress in lipid research"': '5', '"comprehensive reviews in food science and food safety"': '5', '"annual review of nutrition"': '5'}
+input_object =  {'"lo, david"': '5', '"xia, xin"': '5', '"yi li"': '5'}
 
 // const year = 20;
 const ConOrJou_list = Object.keys(input_object);  // select.options[3] 是出版物名称
@@ -33,9 +33,9 @@ async function test(index,length) {
             const year_index = 2021 - input_object[x];
             await page.goto('http://apps.webofknowledge.com/UA_GeneralSearch_input.do?product=UA&search_mode=GeneralSearch&SID=D5iRE4rRiXBxpvZfRCN&preferencesSaved=',{timeout:60000});
             await page.click('#clearIcon1');
-            // input ConOrJou
+            // input author
             await page.type('[id="value(input1)"]',x);
-            await page.select('#select1','SO');
+            await page.select('#select1','AU');
             // choose year
             await page.select('#timespan > div:nth-child(2) > div > select','CUSTOM');
             await page.select('#timespan > div:nth-child(3) > div > select.j-custom-select-yeardropdown.startyear.select2-hidden-accessible',year_index.toString())

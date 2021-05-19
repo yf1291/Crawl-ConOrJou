@@ -75,22 +75,18 @@ def write_list_info():
     workbook.save('sci_list_info.xlsx')
 
 def write_sort_info():
-    N_LIST = [x.replace('"','') for x in list(input_object.keys())]
-    SN_LIST = [x.replace('"','') for x in list(input_object.keys())]
-
-    con_set = set()
-    ConOrJou_list = [x.replace('"','').lower() for x in list(input_object.keys())]
-    print(ConOrJou_list)
+    author_set = set()
+    author_list = [x.replace('"','').lower() for x in list(input_object.keys())]
     # s = ' '.join(ConOrJou_list)
     # print(s)
-
-    file_list = os.listdir('sci_download')
+    file_dir = 'sci_download'
+    file_list = os.listdir(file_dir)
     # init xls
 
     result_as_authors = dict()
 
     for file_name in file_list:
-        with open(f'sci_download/{file_name}','r',encoding='utf-8') as f:
+        with open(f'{file_dir}/{file_name}','r',encoding='utf-8') as f:
             html_doc = f.read()
         print(file_name)
         soup = BeautifulSoup(html_doc, 'html.parser')
@@ -112,22 +108,14 @@ def write_sort_info():
                     ConOrJou = ' '.join([x.strip() for x in tr.find_all('td')[1].text.lower().split('\n')])
                 elif tr.td.text == 'PY ':
                     year = tr.find_all('td')[1].text
-            flag = True
-            if ConOrJou.lower() not in ConOrJou_list: 
-                continue
-            # for e in ConOrJou_list:
-            #     if e in ConOrJou:
-            #         flag = False
-            #         ConOrJou = e
-            #         break
-            # if flag:
-            #     continue
-            con_set.add(ConOrJou)
-            flag = True
-            for author in authors:
+            
+            for index,author in enumerate(authors):
+                if author.lower() not in author_list: # filter out the author in author list
+                    continue
+                author_set.add(author)
                 if author not in result_as_authors:
                     result_as_authors[author] = dict()
-                    if flag:
+                    if index == 0:
                         result_as_authors[author]['1st_count'] = 1
                         result_as_authors[author]['not_1st_count'] = 0
                         result_as_authors[author]['flag'] = ['True']
@@ -145,7 +133,7 @@ def write_sort_info():
                 else:
                     if title in result_as_authors[author]['title']:
                         continue
-                    if flag:
+                    if index == 0:
                         result_as_authors[author]['1st_count'] += 1
                         result_as_authors[author]['flag'].append('True')
                     else:
@@ -158,15 +146,14 @@ def write_sort_info():
                     result_as_authors[author]['n_list'].append(copy.deepcopy(authors))
                     result_as_authors[author]['co-worker'] += copy.deepcopy(authors)
                     result_as_authors[author]['co-worker'].remove(author)
-                flag = False
 
             authors = []
             title = ''
             ConOrJou = ''
 
     print('start2write')
-    print(con_set)
-    print(len(con_set))
+    print(len(author_set),author_set)
+    print(result_as_authors.keys())
             # 这里还要插一个对result_as_authors的排序
     result_as_authors_list = sorted(result_as_authors.items(), key = lambda x : x[1]['1st_count'] + x[1]['not_1st_count'], reverse = True)
 
@@ -260,7 +247,7 @@ def write_sort_info():
             #     worksheet.cell(1,col+1, '合作次数')
         index = max(temp, index)
     if book_index == 1:
-        workbook.save('sci_sort_info.xlsx')
+        workbook.save('sci_sort_info_author.xlsx')
 
 # write_list_info()
 # print(jou_set)

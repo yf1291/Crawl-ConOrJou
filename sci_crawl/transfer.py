@@ -1,3 +1,5 @@
+import re
+
 def transfer():
     output_dict = dict()
     total_dict = dict()
@@ -7,7 +9,10 @@ def transfer():
             # print(line.split(' '))
             slice_list = line.split(' ')
             name = ' '.join(slice_list[:-1]).strip().lower()
-            year = int(slice_list[-1])
+            # print(slice_list)
+            pattern = re.compile('\d')
+            year = pattern.findall(line)[-1]
+            # year = int(slice_list[-1])
             # year = 6
             output_dict[f'"{name}"'] = year
             if name not in total_dict:
@@ -21,6 +26,7 @@ def transfer():
     for n in total_dict:
         if total_dict[n] > 1:
             print(n,total_dict[n])
+    print(len(output_dict))
     print(output_dict)
     # print(name_list)
     # print(year_lsit)
